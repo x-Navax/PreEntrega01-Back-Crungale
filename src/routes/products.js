@@ -1,11 +1,30 @@
 import  Router, { json }  from "express";
-import __dirname from "../src/utils.js";
+import __dirname from "../utils.js";
 import ProductManager from './ProductManager.js';
-
+import path from 'path';
 
 const productManager = new ProductManager("./products.json");
 const productRouter = Router()
 
+productRouter.get('/realtimeproducts', async (req, res) => {
+  try {
+      const products = await productManager.leerProductos();
+      res.render('realTimeProducts', { products });
+  } catch (error) {
+      console.error('Error al obtener los productos:', error);
+      res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+});
+
+productRouter.get('/api/products/home', async (req, res) => {
+  try {
+    const products = await productManager.leerProductos();
+    res.render('home', { products });
+  } catch (error) {
+    console.error('Error al obtener los productos:', error);
+    res.status(500).json({ error: 'Error interno del servidor.' });
+  }
+});
 
 productRouter.get('/api/products', async (req, res) => {
     try {
